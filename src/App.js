@@ -16,7 +16,7 @@ class App extends React.Component {
         <Router>
           <Header />
           <Routes>
-            <Route 
+            <Route
               exact path="/"
               element={<BestBooks />}
             >
