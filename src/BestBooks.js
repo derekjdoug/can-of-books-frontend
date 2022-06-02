@@ -50,15 +50,15 @@ class BestBooks extends React.Component {
         <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
 
         {this.state.books.length ? (
-          <Carousel>
+          <Carousel id="carousel">
               {this.state.books.map(book => (
               <Carousel.Item>
-                <Image
+                <Image id="carousel-image"
                   className="w-100"
                   src={bookImg}
                   alt={book.title}
                 />
-                <Carousel.Caption>
+                <Carousel.Caption id="carousel-text-box">
                   <h2 className="carousel-text">{book.title}</h2>
                   <p className="carousel-text">{book.description}</p>
                   <p className="carousel-text">{book.status}</p>
