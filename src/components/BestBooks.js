@@ -1,20 +1,22 @@
 import React from 'react';
 import axios from 'axios';
-import Carousel from 'react-bootstrap/Carousel';
-import Image from 'react-bootstrap/Image';
-import bookImg from './bookImg.jpg';
+import BookCarousel from './BookCarousel';
+import AddBook from './AddBook';
 
 class BestBooks extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       books: [],
-      errorMessage: ''
+      errorMessage: '',
+      modalState: false,
     }
   }
+  showModal = () => this.setState({modalState: true});
+  hideModal = () => this.setState({modalState: false});
 
-  /* TODO: Make a GET request to your API to fetch all the books from the database  */
-
+  /* DONE: Make a GET request to your API to fetch all the books from the database  */
+  
   // async componentDidMount() {
   //   let url = `http://localhost:3001/books`;
   //   const response = await axios.get(url);
@@ -41,32 +43,22 @@ class BestBooks extends React.Component {
     }
   }
 
+  handleBookCreate = async (newBookInfo) => {
+    const response = await axios.post(`http://localhost:3001/books`, newBookInfo);
+    console.log(response.data);
+    this.props.updateBooksArray(response.data); // TODO: build updateBooksArray into app.js
+  }
+
+
   render() {
 
-    /* TODO: render all the books in a Carousel */
+    /* DONE: render all the books in a Carousel */
 
     return (
       <>
         <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
-
-        {this.state.books.length ? (
-          <Carousel id="carousel">
-              {this.state.books.map(book => (
-              <Carousel.Item>
-                <Image id="carousel-image"
-                  className="w-100"
-                  src={bookImg}
-                  alt={book.title}
-                />
-                <Carousel.Caption id="carousel-text-box">
-                  <h2 className="carousel-text">{book.title}</h2>
-                  <p className="carousel-text">{book.description}</p>
-                  <p className="carousel-text">{book.status}</p>
-                </Carousel.Caption>
-              </Carousel.Item>
-              ))}
-            </Carousel>
-        ) : (
+        <AddBook handleBookCreate={this.handleBookCreate} showModal={this.showModal} hideModal={this.hideModal}/>
+        {this.state.books.length ? (<BookCarousel book={this.state.books}/>) : (
           <h3>No Books Found :</h3>
         )}
       </>
