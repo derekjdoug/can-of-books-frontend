@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import BookCarousel from './BookCarousel';
 import AddBook from './AddBook';
+import UpdateBook from './UpdateBook';
 
 class BestBooks extends React.Component {
   constructor(props) {
@@ -56,6 +57,22 @@ class BestBooks extends React.Component {
     await axios.delete(`http://localhost:3001/books/${bookToBeDeleted}`);
   }
 
+  handleBookUpdate = async bookToUpdate => {
+    try {
+      const updatedBooks = this.state.books.map(existingBook => {
+        if (existingBook._id === bookToUpdate._id) {
+          return bookToUpdate;
+        } else {
+          return existingBook;
+        }
+      });
+      this.setState({ books: updatedBooks })
+      await axios.put(`http://localhost:3001/books/${bookToUpdate._id}`, bookToUpdate);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
 
   render() {
 
@@ -65,6 +82,7 @@ class BestBooks extends React.Component {
       <>
         <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
         <AddBook handleBookCreate={this.handleBookCreate} showModal={this.showModal} hideModal={this.hideModal} modalState={this.state.modalState} />
+        <UpdateBook showModal={this.showModal} hideModal={this.hideModal} handleBookUpdate={this.handleBookUpdate} modalState={this.state.modalState} />
         {this.state.books.length ? (<BookCarousel books={this.state.books} handleBookDelete={this.handleBookDelete} />) : (
           <h3>No Books Found :</h3>
         )}
