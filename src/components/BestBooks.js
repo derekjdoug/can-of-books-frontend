@@ -12,11 +12,11 @@ class BestBooks extends React.Component {
       modalState: false,
     }
   }
-  showModal = () => this.setState({modalState: true});
-  hideModal = () => this.setState({modalState: false});
+  showModal = () => this.setState({ modalState: true });
+  hideModal = () => this.setState({ modalState: false });
 
   /* DONE: Make a GET request to your API to fetch all the books from the database  */
-  
+
   // async componentDidMount() {
   //   let url = `http://localhost:3001/books`;
   //   const response = await axios.get(url);
@@ -46,7 +46,14 @@ class BestBooks extends React.Component {
   handleBookCreate = async (newBookInfo) => {
     const response = await axios.post(`http://localhost:3001/books`, newBookInfo);
     console.log(response.data);
-    this.props.updateBooksArray(response.data); // TODO: build updateBooksArray into app.js
+    // this.props.updateBooksArray(response.data); // TODO: build updateBooksArray into app.js
+  }
+
+  handleBookDelete = async (event, bookToBeDeleted) => {
+    console.log('Book to be deleted: ', bookToBeDeleted);
+    const filteredBooks = this.state.books.filter(book => book._id !== bookToBeDeleted);
+    this.setState({ books: filteredBooks});
+    await axios.delete(`http://localhost:3001/books/${bookToBeDeleted}`);
   }
 
 
@@ -57,8 +64,8 @@ class BestBooks extends React.Component {
     return (
       <>
         <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
-        <AddBook handleBookCreate={this.handleBookCreate} showModal={this.showModal} hideModal={this.hideModal}/>
-        {this.state.books.length ? (<BookCarousel book={this.state.books}/>) : (
+        <AddBook handleBookCreate={this.handleBookCreate} showModal={this.showModal} hideModal={this.hideModal} modalState={this.state.modalState} />
+        {this.state.books.length ? (<BookCarousel books={this.state.books} handleBookDelete={this.handleBookDelete} />) : (
           <h3>No Books Found :</h3>
         )}
       </>
