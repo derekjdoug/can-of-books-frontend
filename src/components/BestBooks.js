@@ -1,93 +1,72 @@
 import React from 'react';
-import axios from 'axios';
-import BookCarousel from './BookCarousel';
 import AddBook from './AddBook';
 import UpdateBook from './UpdateBook';
+import { ListGroup } from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
 
 class BestBooks extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      books: [],
-      errorMessage: '',
-      modalState: false,
+      selectedBook: null
     }
   }
-  showModal = () => this.setState({ modalState: true });
-  hideModal = () => this.setState({ modalState: false });
+  handleBookSelect = (book) => {
+    this.setState({ selectedBook: book });
+  };
 
-  /* DONE: Make a GET request to your API to fetch all the books from the database  */
-
-  // async componentDidMount() {
-  //   let url = `http://localhost:3001/books`;
-  //   const response = await axios.get(url);
-  //   console.log(response.data);
-  //   this.setState({ books: response.data });
-  // }
-
-  componentDidMount = async () => {
-    try {
-      const config = {
-        method: 'get',
-        baseURL: process.env.REACT_APP_SERVER,
-        url: '/books'
-      }
-      const response = await axios(config);
-      this.setState({
-        books: response.data
-      })
-    } catch (error) {
-      console.error('Error in BestBooks componentDidMount', error);
-      this.setState({
-        errorMessage: `Status Code: ${error.response.status}: ${error.response.data}`
-      })
-    }
+  handleClose = () => {
+    this.setState({ selectedBook: null });
   }
-
-  handleBookCreate = async (newBookInfo) => {
-    const response = await axios.post(`http://localhost:3001/books`, newBookInfo);
-    console.log(response.data);
-    // this.props.updateBooksArray(response.data); // TODO: build updateBooksArray into app.js
-  }
-
-  handleBookDelete = async (event, bookToBeDeleted) => {
-    console.log('Book to be deleted: ', bookToBeDeleted);
-    const filteredBooks = this.state.books.filter(book => book._id !== bookToBeDeleted);
-    this.setState({ books: filteredBooks});
-    await axios.delete(`http://localhost:3001/books/${bookToBeDeleted}`);
-  }
-
-  handleBookUpdate = async bookToUpdate => {
-    try {
-      const updatedBooks = this.state.books.map(existingBook => {
-        if (existingBook._id === bookToUpdate._id) {
-          return bookToUpdate;
-        } else {
-          return existingBook;
-        }
-      });
-      this.setState({ books: updatedBooks })
-      await axios.put(`http://localhost:3001/books/${bookToUpdate._id}`, bookToUpdate);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
 
   render() {
-
-    /* DONE: render all the books in a Carousel */
-
     return (
       <>
-        <h2>My Essential Lifelong Learning &amp; Formation Shelf</h2>
-        <AddBook handleBookCreate={this.handleBookCreate} showModal={this.showModal} hideModal={this.hideModal} modalState={this.state.modalState} />
-        <UpdateBook showModal={this.showModal} hideModal={this.hideModal} handleBookUpdate={this.handleBookUpdate} modalState={this.state.modalState} />
-        {this.state.books.length ? (<BookCarousel books={this.state.books} handleBookDelete={this.handleBookDelete} />) : (
-          <h3>No Books Found :</h3>
+        <AddBook handleBookCreate={this.props.handleBookCreate} showModal={this.props.showModal} hideModal={this.props.hideModal} modalState={this.props.modalState} />
+        <ListGroup>
+          {this.props.books.length && this.props.books.map(book => (
+            <ListGroup.Item key={book._id} >
+              <Book info={book} onDelete={this.props.handleBookDelete} onSelect={this.handleBookSelect} />
+            </ListGroup.Item>
+
+          ))}
+        </ListGroup>
+        {this.state.selectedBook && (
+          <UpdateBook book={this.state.selectedBook} show={this.state.selectedBook !== null} showModal={this.props.showModal} hideModal={this.props.hideModal} handleBookUpdate={this.props.handleBookUpdate} modalState={this.props.modalState} onClose={this.handleClose} />
         )}
+
       </>
     )
+  }
+}
+class Book extends React.Component {
+
+  update = () => {
+    this.props.onSelect(this.props.info);
+  }
+
+  delete = () => {
+    this.props.onDelete(this.props.info._id);
+    console.log(this.props.info)
+  }
+
+  render() {
+    return (
+      <>
+        <h3>
+          {this.props.info.title}
+          ,description: {this.props.info.title}
+          ,status: {String(this.props.info.status)}
+        </h3>
+        <p>
+          {/* <span onClick={this.update}>[Update]</span>
+          <span onClick={this.delete}>[Delete]</span> */}
+          <Button onClick={this.update}>Update This Book!</Button>
+          <Button onClick={this.delete}>Delete This Book!</Button>
+        </p>
+      </>
+
+    );
   }
 }
 
