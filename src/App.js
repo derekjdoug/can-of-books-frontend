@@ -53,9 +53,11 @@ class App extends React.Component {
   handleBookDelete = async (event, bookToBeDeleted) => {
     console.log('Book to be deleted: ', bookToBeDeleted);
     const filteredBooks = this.state.books.filter(book => book._id !== bookToBeDeleted);
-    this.setState({ books: filteredBooks});
+    this.setState({ books: filteredBooks });
     await axios.delete(`http://localhost:3001/books/${bookToBeDeleted}`);
   }
+
+
 
   handleBookUpdate = async bookToUpdate => {
     try {

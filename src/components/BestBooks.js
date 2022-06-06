@@ -19,6 +19,10 @@ class BestBooks extends React.Component {
     this.setState({ selectedBook: null });
   }
 
+  // handleDelete = (book) => {
+  //   this.props.handleBookDelete(book._id);
+  // }
+
   render() {
     return (
       <>
@@ -26,7 +30,7 @@ class BestBooks extends React.Component {
         <ListGroup>
           {this.props.books.length && this.props.books.map(book => (
             <ListGroup.Item key={book._id} >
-              <Book info={book} onDelete={this.props.handleBookDelete} onSelect={this.handleBookSelect} />
+              <Book info={book} onDelete={this.props.handleBookDelete} onSelect={this.handleBookSelect} onUpdate={this.props.handleBookUpdate} />
             </ListGroup.Item>
 
           ))}
@@ -45,24 +49,19 @@ class Book extends React.Component {
     this.props.onSelect(this.props.info);
   }
 
-  delete = () => {
-    this.props.onDelete(this.props.info._id);
-    console.log(this.props.info)
-  }
-
   render() {
     return (
       <>
         <h3>
           {this.props.info.title}
-          ,description: {this.props.info.title}
-          ,status: {String(this.props.info.status)}
+          , description: {this.props.info.description}
+          , status: {String(this.props.info.status)}
         </h3>
         <p>
           {/* <span onClick={this.update}>[Update]</span>
           <span onClick={this.delete}>[Delete]</span> */}
           <Button onClick={this.update}>Update This Book!</Button>
-          <Button onClick={this.delete}>Delete This Book!</Button>
+          <Button onClick={event => this.props.onDelete(event, this.props.info._id)}>Delete This Book!</Button>
         </p>
       </>
 
