@@ -19,7 +19,7 @@ class UpdateBook extends React.Component {
     event.preventDefault();
     this.props.handleBookUpdate(this.state);
     this.props.hideModal();
-    this.handleClose();
+    this.handleModalClose();
   };
 
   handleTitleChange = event => {
@@ -34,61 +34,62 @@ class UpdateBook extends React.Component {
     this.setState({ status: event.target.checked });
   };
 
-  handleClose = () => {
+  handleModalClose = () => {
     this.props.hideModal();
+    this.props.onClose();
   }
 
 
   render() {
     return (
       <>
-      <Button onClick={this.props.showModal}>Update This Book!</Button>
-      <Modal show={this.props.modalState} onHide={this.props.hideModal}>
-        <Modal.Dialog>
-          <Modal.Header closeButton>
-            <Modal.Title>Update a book</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form onSubmit={this.handleSubmit}>
-              <Form.Group className="mb-3" controlId="formTitle">
-                <Form.Label>Title</Form.Label>
-                <Form.Control
-                type="name"
-                placeholder="Book title go here"
-                onChange={this.handleTitleChange}
-                value={this.state.title}
-                />
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="formDescription">
-                <Form.Label>Description</Form.Label>
-                <Form.Control
-                type="name"
-                placeholder="Description"
-                onChange={this.handleDescriptionChange}
-                value={this.state.description}
-                />
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="formStatus">
-                <Form.Check
-                type="checkbox"
-                label="Available?"
-                onChange={this.handleStatusChange}
-                checked={this.state.status}
-                />
-              </Form.Group>
-              <Button variant="primary" type="submit">
-                Submit
+        <Button onClick={this.props.showModal}>Update This Book!</Button>
+        <Modal show={this.props.modalState} onHide={this.props.hideModal}>
+          <Modal.Dialog>
+            <Modal.Header closeButton>
+              <Modal.Title>Update a book</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form onSubmit={this.handleSubmit}>
+                <Form.Group className="mb-3" controlId="formTitle">
+                  <Form.Label>Title</Form.Label>
+                  <Form.Control
+                    type="name"
+                    placeholder="Book title go here"
+                    onChange={this.handleTitleChange}
+                    value={this.state.title}
+                  />
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="formDescription">
+                  <Form.Label>Description</Form.Label>
+                  <Form.Control
+                    type="name"
+                    placeholder="Description"
+                    onChange={this.handleDescriptionChange}
+                    value={this.state.description}
+                  />
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="formStatus">
+                  <Form.Check
+                    type="checkbox"
+                    label="Available?"
+                    onChange={this.handleStatusChange}
+                    checked={this.state.status}
+                  />
+                </Form.Group>
+                <Button variant="primary" type="submit">
+                  Submit
+                </Button>
+              </Form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button onClick={this.props.hideModal} variant="secondary">
+                Close
               </Button>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={this.props.hideModal} variant="secondary">
-              Close
-            </Button>
-          </Modal.Footer>
-        </Modal.Dialog>
-      </Modal>
-    </>
+            </Modal.Footer>
+          </Modal.Dialog>
+        </Modal>
+      </>
     )
   }
 }
