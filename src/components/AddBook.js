@@ -6,7 +6,7 @@ import Form from 'react-bootstrap/Form';
 // TODO: change backend to include boolean status
 class AddBook extends React.Component {
   handleSubmit = (event) => {
-    // event.preventDefault();
+    event.preventDefault();
     this.props.handleBookCreate({ title: event.target.formTitle.value, description: event.target.formDescription.value, status: event.target.formStatus.checked });
     this.props.hideModal();
   }
