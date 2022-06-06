@@ -45,7 +45,7 @@ class App extends React.Component {
   }
 
   handleBookCreate = async (newBookInfo) => {
-    const response = await axios.post(`http://localhost:3001/books`, newBookInfo);
+    const response = await axios.post(`${process.env.REACT_APP_SERVER}/books`, newBookInfo);
     console.log(response.data);
     // this.props.updateBooksArray(response.data); // TODO: build updateBooksArray into app.js
   }
@@ -54,7 +54,7 @@ class App extends React.Component {
     console.log('Book to be deleted: ', bookToBeDeleted);
     const filteredBooks = this.state.books.filter(book => book._id !== bookToBeDeleted);
     this.setState({ books: filteredBooks });
-    await axios.delete(`http://localhost:3001/books/${bookToBeDeleted}`);
+    await axios.delete(`${process.env.REACT_APP_SERVER}/books/${bookToBeDeleted}`);
   }
 
 
@@ -69,7 +69,7 @@ class App extends React.Component {
         }
       });
       this.setState({ books: updatedBooks })
-      await axios.put(`http://localhost:3001/books/${bookToUpdate._id}`, bookToUpdate);
+      await axios.put(`${process.env.REACT_APP_SERVER}/books/${bookToUpdate._id}`, bookToUpdate);
     } catch (error) {
       console.error(error);
     }
