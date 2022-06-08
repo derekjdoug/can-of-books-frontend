@@ -12,6 +12,8 @@ import {
 import './App.css';
 import axios from 'axios';
 import BookCarousel from './components/BookCarousel';
+import { withAuth0 } from '@auth0/auth0-react';
+
 
 class App extends React.Component {
   constructor(props) {
@@ -27,15 +29,21 @@ class App extends React.Component {
 
   componentDidMount = async () => {
     try {
-      const config = {
-        method: 'get',
-        baseURL: process.env.REACT_APP_SERVER,
-        url: '/books'
+      if (this.props.auth0.isAuthenticated) {
+        const res = await this.props.auth0.getIdTokenClaims();
+        const jwt = res.__raw;
+
+        const config = {
+          headers: { "Authorization": `Bearer ${jwt}` },
+          method: 'get',
+          baseURL: process.env.REACT_APP_SERVER,
+          url: '/books'
+        }
+        const response = await axios(config);
+        this.setState({
+          books: response.data
+        })
       }
-      const response = await axios(config);
-      this.setState({
-        books: response.data
-      })
     } catch (error) {
       console.error('Error in BestBooks componentDidMount', error);
       this.setState({
@@ -106,4 +114,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default withAuth0(App);
