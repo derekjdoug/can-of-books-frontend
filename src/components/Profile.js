@@ -4,6 +4,8 @@ import React from "react";
 const Profile = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
 
+
+
   if (isLoading) {
     return <div>Loading ...</div>;
   }
@@ -15,8 +17,10 @@ const Profile = () => {
         <h2>{user.name}</h2>
         <p>{user.email}</p>
       </div>
+
     )
   );
+
 };
 
 export default Profile;
