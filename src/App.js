@@ -12,9 +12,7 @@ import {
 import './App.css';
 import axios from 'axios';
 import BookCarousel from './components/BookCarousel';
-import { withAuth0 } from '@auth0/auth0-react';
-
-
+import { User, withAuth0 } from '@auth0/auth0-react';
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -22,6 +20,7 @@ class App extends React.Component {
       books: [],
       errorMessage: '',
       modalState: false,
+      email: ''
     }
   }
   showModal = () => this.setState({ modalState: true });
@@ -37,7 +36,7 @@ class App extends React.Component {
           headers: { "Authorization": `Bearer ${jwt}` },
           method: 'get',
           baseURL: process.env.REACT_APP_SERVER,
-          url: '/books'
+          url: '/books',
         }
         const response = await axios(config);
         this.setState({
@@ -53,9 +52,23 @@ class App extends React.Component {
   }
 
   handleBookCreate = async (newBookInfo) => {
-    const response = await axios.post(`${process.env.REACT_APP_SERVER}/books`, newBookInfo);
+    if (this.props.auth0.isAuthenticated) {
+      const res = await this.props.auth0.getIdTokenClaims();
+      const jwt = res.__raw;
+
+      const config = {
+        headers: { "Authorization": `Bearer ${jwt}` },
+        method: 'post',
+        baseURL: process.env.REACT_APP_SERVER,
+        url: '/books',
+        data: newBookInfo
+      }
+
+
+    const response = await axios(config);
     console.log(response.data);
     // this.props.updateBooksArray(response.data); // TODO: build updateBooksArray into app.js
+    }
   }
 
   handleBookDelete = async (event, bookToBeDeleted) => {
@@ -82,6 +95,7 @@ class App extends React.Component {
       console.error(error);
     }
   }
+
   render() {
     return (
       <>
@@ -90,9 +104,7 @@ class App extends React.Component {
           <Routes>
             <Route
               exact path="/"
-              element={this.state.books.length ? (<BookCarousel books={this.state.books} handleBookDelete={this.handleBookDelete} />) : (
-                <h3>No Books Found :</h3>
-              )}
+              element={<BookCarousel books={this.state.books} handleBookDelete={this.handleBookDelete} handleEmail={this.handleEmail} />}
             >
             </Route>
             <Route
