@@ -13,6 +13,7 @@ import './App.css';
 import axios from 'axios';
 import BookCarousel from './components/BookCarousel';
 import { withAuth0 } from '@auth0/auth0-react';
+import Login from './components/Login.js';
 
 
 class App extends React.Component {
@@ -90,9 +91,7 @@ class App extends React.Component {
           <Routes>
             <Route
               exact path="/"
-              element={this.state.books.length ? (<BookCarousel books={this.state.books} handleBookDelete={this.handleBookDelete} />) : (
-                <h3>No Books Found :</h3>
-              )}
+              element={<BookCarousel books={this.state.books} handleBookDelete={this.handleBookDelete} />}
             >
             </Route>
             <Route
